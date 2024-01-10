@@ -3,29 +3,5 @@
 @tailwind utilities;
 
 @layer utilities  {
-  .span1 {
-    clip-path: polygon(0 92%, 100% 50%, 0 8%);
-    background-color: #ad120d;
-    top: 120px;
-    left: 0;
-  }
-
-  .span2 {
-    clip-path: polygon(100% 92%, 0 50%, 100% 8%);
-    background-color: #e77638;
-    top: 120px;
-    right: 0;
-  }
-  .span3{
-    clip-path: polygon(50% 0%, 8% 100%, 92% 100%);
-    background-color: #6e1213;
-    bottom: 0;
-    left: 120px;
-  }
-  .span4{
-    clip-path: polygon(50% 100%, 92% 0, 8% 0);
-    background-color: #fab32b;
-    top: 0;
-    left: 120px;
-  }
+  
 }
