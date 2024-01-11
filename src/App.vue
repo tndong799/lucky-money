@@ -17,56 +17,48 @@ const percent = [
     value: '30.000đ',
     percent: 0.3,
     deg: [158, 203],
-    class: 'rotate-[185deg]',
   },
   {
     id: 2,
     value: '10.000đ',
     percent: 0.1,
     deg: [338, 23],
-    class: '',
   },
   {
     id: 3,
     value: '20.000đ',
     percent: 0.3,
     deg: [248, 293],
-    class: '-rotate-[270deg]',
   },
   {
     id: 4,
     value: '50.000đ',
     percent: 0.1,
     deg: [68, 113],
-    class: '-rotate-[85deg]',
   },
   {
     id: 5,
     value: '20.000đ',
     percent: 0,
     deg: [293, 338],
-    class: 'rotate-[185deg]',
   },
   {
     id: 6,
     value: '100.000đ',
     percent: 0,
     deg: [113, 158],
-    class: '',
   },
   {
     id: 7,
     value: '40.000đ',
     percent: 0.2,
     deg: [23, 68],
-    class: 'rotate-90',
   },
   {
     id: 8,
     value: '200.000',
     percent: 0,
     deg: [203, 248],
-    class: '-rotate-[85deg]',
   },
 ];
 
@@ -159,7 +151,11 @@ watch(id, value => {
           >
             <b
               class="text-2xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              :class="item.class"
+              :class="{
+                'rotate-[185deg]': index == 0,
+                '-rotate-[270deg]': index == 2,
+                '-rotate-[85deg]': index == 3,
+              }"
             >
               {{ item.value }}
             </b>
@@ -173,7 +169,11 @@ watch(id, value => {
           >
             <b
               class="text-2xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-              :class="item.class"
+              :class="{
+                'rotate-[185deg]': index == 0,
+                'rotate-90': index == 2,
+                '-rotate-[85deg]': index == 3,
+              }"
             >
               {{ item.value }}
             </b>
