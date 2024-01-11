@@ -26,8 +26,8 @@ const percent = [
   },
   {
     id: 3,
-    value: '20.000đ',
-    percent: 0.3,
+    value: '5.000đ',
+    percent: 0,
     deg: [248, 293],
   },
   {
@@ -39,7 +39,7 @@ const percent = [
   {
     id: 5,
     value: '20.000đ',
-    percent: 0,
+    percent: 0.3,
     deg: [293, 338],
   },
   {
@@ -86,7 +86,7 @@ const degRangeAvailable = computed(() => {
 const itemPercent = computed(() => {
   return degRangeAvailable.value.reduce((prev, curr) => {
     prev = prev || [];
-    prev.push(...Array.from({ length: curr.percent * 10 }, () => curr.id));
+    prev.push(...Array.from({ length: curr.percent * 100 }, () => curr.id));
     return prev;
   }, []);
 });
@@ -107,7 +107,7 @@ function randomIntFromInterval(min, max) {
 }
 
 const handleSpin = () => {
-  const indexRandom = randomIntFromInterval(0, 9);
+  const indexRandom = randomIntFromInterval(0, 99);
   id.value = itemPercent.value[indexRandom];
 };
 
