@@ -1,5 +1,10 @@
 <script setup>
 import { computed, ref, watch } from 'vue';
+import congratulations1 from '@/assets/congratulations-1.gif';
+import congratulations2 from '@/assets/congratulations-2.gif';
+import congratulations3 from '@/assets/congratulations-3.gif';
+import congratulations4 from '@/assets/congratulations-4.gif';
+import congratulations5 from '@/assets/congratulations-5.gif';
 
 const mainRef = ref(null);
 const boxRef = ref(null);
@@ -65,6 +70,20 @@ const percent = [
   },
 ];
 
+const luckyMessages = [
+  'Chúc mừng năm mới',
+  'Vạn sự như ý',
+  'Phát tài phát lộc',
+  'Tiền vào như nước',
+  'Mau ăn chóng lớn',
+];
+const images = [
+  congratulations1,
+  congratulations2,
+  congratulations3,
+  congratulations4,
+  congratulations5,
+];
 const boxOne = computed(() => [...percent].slice(0, 4));
 const boxTwo = computed(() => [...percent].slice(4, 8));
 
@@ -87,7 +106,9 @@ const itemSelected = computed(() => {
 const degRandom = computed(() => {
   return id.value ? randomIntFromInterval(...itemSelected.value.deg) : null;
 });
-
+const image = computed(() => {
+  return images[itemSelected.value?.id % images.length];
+});
 function randomIntFromInterval(min, max) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -119,36 +140,6 @@ watch(id, value => {
     }, duration * 1000);
   }
 });
-// const degRandom = () => {
-//   const indexRandom = randomIntFromInterval(0, 9);
-//   id.value = itemPercent.value[indexRandom];
-//   const degRange = itemSelected.value.deg;
-//   return randomIntFromInterval(...degRange);
-// };
-
-// const handleSpin = () => {
-
-// const duration = 5;
-// isSpinning.value = true;
-// id.value = null;
-// let deg = 0;
-// boxRef.value.style.transition = 'transform 0s';
-// boxRef.value.style.transform = `rotate(${deg}deg)`;
-// deg = degRandom();
-// void boxRef.value.offsetWidth;
-
-// boxRef.value.style.transition = `transform ${duration}s cubic-bezier(0.25, 0.1, 0.25, 1)`;
-// boxRef.value.style.transform = `rotate(${deg + 1440}deg)`; // 4 full spins (1440 degrees)
-// mainRef.value.classList.remove('after:animate-animateArrow');
-// setTimeout(() => {
-//   mainRef.value.classList.add('after:animate-animateArrow');
-//   boxRef.value.style.transition = '';
-//   isSpinning.value = false;
-//   open.value = true;
-//   // const currentRotation = deg.value + 1440;
-//   // boxRef.value.style.transform = `rotate(${currentRotation}deg)`;
-// }, duration * 1000);
-// };
 </script>
 <template>
   <div class="bg-[#6e1213] h-screen flex items-center justify-center">
@@ -201,15 +192,15 @@ watch(id, value => {
 
   <div class="fixed top-0 left-0 w-full h-screen bg-[#00000020]" v-if="open" @click="open = false">
     <div
-      class="w-[320px] h-[320px] bg-red-200 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-sm border border-red-900"
+      class="w-[320px] h-[320px] bg-[#e77638] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-sm border border-red-900"
       @click.stop
     >
       <div
         class="text-center my-4 font-medium text-2xl text-red-800 flex items-center justify-center"
       >
-        <img class="w-[180px] h-[180px]" src="@/assets/congratulations.gif" alt="" />
+        <img class="w-[180px] h-[180px]" :src="image" alt="" />
       </div>
-      <div class="text-center font-bold text-red-900 text-7xl mt-6">{{ itemSelected?.value }}</div>
+      <div class="text-center font-bold text-red-800 text-7xl mt-6">{{ itemSelected?.value }}</div>
     </div>
   </div>
 </template>
