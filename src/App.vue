@@ -1,9 +1,11 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const mainRef = ref(null);
 const boxRef = ref(null);
-const deg = ref(0);
+const isSpinning = ref(false);
+const open = ref(false);
+const id = ref(null);
 const percent = [
   {
     id: 1,
@@ -78,37 +80,75 @@ const itemPercent = computed(() => {
   }, []);
 });
 
+const itemSelected = computed(() => {
+  return id.value ? degRangeAvailable.value.find(item => item.id === id.value) : null;
+});
+
+const degRandom = computed(() => {
+  return id.value ? randomIntFromInterval(...itemSelected.value.deg) : null;
+});
+
 function randomIntFromInterval(min, max) {
   // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-const degRandom = () => {
-  const indexRandom = randomIntFromInterval(0, 9);
-  const id = itemPercent.value[indexRandom];
-  const degRange = degRangeAvailable.value.find(item => item.id === id).deg;
-  return randomIntFromInterval(...degRange);
-};
-
 const handleSpin = () => {
-  const duration = 5;
-  deg.value = 0;
-  deg.value = degRandom();
-  boxRef.value.style.transition = 'transform 0s';
-  boxRef.value.style.transform = `rotate(${deg.value}deg)`;
-
-  void boxRef.value.offsetWidth;
-
-  boxRef.value.style.transition = `transform ${duration}s cubic-bezier(0.25, 0.1, 0.25, 1)`;
-  boxRef.value.style.transform = `rotate(${deg.value + 1440}deg)`; // 4 full spins (1440 degrees)
-  mainRef.value.classList.remove('after:animate-animateArrow');
-  setTimeout(() => {
-    mainRef.value.classList.add('after:animate-animateArrow');
-    boxRef.value.style.transition = '';
-    const currentRotation = deg.value + 1440;
-    boxRef.value.style.transform = `rotate(${currentRotation}deg)`;
-  }, duration * 1000);
+  const indexRandom = randomIntFromInterval(0, 9);
+  id.value = itemPercent.value[indexRandom];
 };
+
+watch(id, value => {
+  if (value) {
+    const duration = 5;
+    isSpinning.value = true;
+    boxRef.value.style.transition = 'transform 0s';
+    boxRef.value.style.transform = `rotate(0deg)`;
+    void boxRef.value.offsetWidth;
+
+    boxRef.value.style.transition = `transform ${duration}s cubic-bezier(0.25, 0.1, 0.25, 1)`;
+    boxRef.value.style.transform = `rotate(${degRandom.value + 1440}deg)`; // 4 full spins (1440 degrees)
+    mainRef.value.classList.remove('after:animate-animateArrow');
+    setTimeout(() => {
+      mainRef.value.classList.add('after:animate-animateArrow');
+      boxRef.value.style.transition = '';
+      isSpinning.value = false;
+      open.value = true;
+      // const currentRotation = deg.value + 1440;
+      // boxRef.value.style.transform = `rotate(${currentRotation}deg)`;
+    }, duration * 1000);
+  }
+});
+// const degRandom = () => {
+//   const indexRandom = randomIntFromInterval(0, 9);
+//   id.value = itemPercent.value[indexRandom];
+//   const degRange = itemSelected.value.deg;
+//   return randomIntFromInterval(...degRange);
+// };
+
+// const handleSpin = () => {
+
+// const duration = 5;
+// isSpinning.value = true;
+// id.value = null;
+// let deg = 0;
+// boxRef.value.style.transition = 'transform 0s';
+// boxRef.value.style.transform = `rotate(${deg}deg)`;
+// deg = degRandom();
+// void boxRef.value.offsetWidth;
+
+// boxRef.value.style.transition = `transform ${duration}s cubic-bezier(0.25, 0.1, 0.25, 1)`;
+// boxRef.value.style.transform = `rotate(${deg + 1440}deg)`; // 4 full spins (1440 degrees)
+// mainRef.value.classList.remove('after:animate-animateArrow');
+// setTimeout(() => {
+//   mainRef.value.classList.add('after:animate-animateArrow');
+//   boxRef.value.style.transition = '';
+//   isSpinning.value = false;
+//   open.value = true;
+//   // const currentRotation = deg.value + 1440;
+//   // boxRef.value.style.transform = `rotate(${currentRotation}deg)`;
+// }, duration * 1000);
+// };
 </script>
 <template>
   <div class="bg-[#6e1213] h-screen flex items-center justify-center">
@@ -152,18 +192,24 @@ const handleSpin = () => {
       <button
         class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[75px] h-[75px] rounded-full border-4 border-white bg-[#6e1213] text-[#fff] shadow-[0_5px_20px_#000] font-bold text-xl cursor-pointer active:w-[70px] active:h-[70px] active:text-sm"
         @click="handleSpin"
+        :disabled="isSpinning"
       >
         Quay
       </button>
     </div>
   </div>
 
-  <div class="fixed top-0 left-0 w-full h-screen bg-[#00000020]" v-if="false">
+  <div class="fixed top-0 left-0 w-full h-screen bg-[#00000020]" v-if="open" @click="open = false">
     <div
-      class="w-[320px] h-[320px] bg-red-200 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg"
+      class="w-[320px] h-[320px] bg-red-200 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg shadow-sm border border-red-900"
+      @click.stop
     >
-      <div class="text-center my-4 font-medium text-2xl text-red-800">Congratulation</div>
-      <div class="text-center font-bold text-red-900 text-7xl mt-16">20.000đ</div>
+      <div
+        class="text-center my-4 font-medium text-2xl text-red-800 flex items-center justify-center"
+      >
+        <img class="w-[180px] h-[180px]" src="@/assets/congratulations.gif" alt="" />
+      </div>
+      <div class="text-center font-bold text-red-900 text-7xl mt-6">{{ itemSelected?.value }}</div>
     </div>
   </div>
 </template>
