@@ -11,6 +11,7 @@ const boxRef = ref(null);
 const isSpinning = ref(false);
 const open = ref(false);
 const id = ref(null);
+const deg = ref(0);
 const percent = [
   {
     id: 1,
@@ -22,7 +23,7 @@ const percent = [
     id: 2,
     value: '10.000đ',
     percent: 0.1,
-    deg: [338, 23],
+    deg: [338, 383],
   },
   {
     id: 3,
@@ -95,9 +96,6 @@ const itemSelected = computed(() => {
   return id.value ? degRangeAvailable.value.find(item => item.id === id.value) : null;
 });
 
-const degRandom = computed(() => {
-  return id.value ? randomIntFromInterval(...itemSelected.value.deg) : null;
-});
 const image = computed(() => {
   return images[itemSelected.value?.id % images.length];
 });
@@ -107,20 +105,23 @@ function randomIntFromInterval(min, max) {
 }
 
 const handleSpin = () => {
+  if (isSpinning.value) return;
+  isSpinning.value = true;
   const indexRandom = randomIntFromInterval(0, 99);
   id.value = itemPercent.value[indexRandom];
+  const itemSelected = degRangeAvailable.value.find(item => item.id === id.value);
+  deg.value = randomIntFromInterval(...itemSelected.deg);
 };
 
-watch(id, value => {
+watch(deg, value => {
   if (value) {
     const duration = 5;
-    isSpinning.value = true;
     boxRef.value.style.transition = 'transform 0s';
     boxRef.value.style.transform = `rotate(0deg)`;
     void boxRef.value.offsetWidth;
 
     boxRef.value.style.transition = `transform ${duration}s cubic-bezier(0.25, 0.1, 0.25, 1)`;
-    boxRef.value.style.transform = `rotate(${degRandom.value + 1440}deg)`; // 4 full spins (1440 degrees)
+    boxRef.value.style.transform = `rotate(${deg.value + 1440}deg)`; // 4 full spins (1440 degrees)
     mainRef.value.classList.remove('after:animate-animateArrow');
     setTimeout(() => {
       mainRef.value.classList.add('after:animate-animateArrow');
